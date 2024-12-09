@@ -7,7 +7,7 @@ from fireREST.fmc.policy.accesspolicy.defaultaction import DefaultAction
 from fireREST.fmc.policy.accesspolicy.inheritancesettings import InheritanceSettings
 from fireREST.fmc.policy.accesspolicy.operational import Operational
 from fireREST.fmc.policy.accesspolicy.securityintelligencepolicy import SecurityIntelligencePolicy
-
+from .response import AccessPolicyResponse
 
 class AccessPolicy(Resource):
     PATH = '/policy/accesspolicies/{uuid}'
@@ -29,5 +29,6 @@ class AccessPolicy(Resource):
         self.securityintelligencepolicy = SecurityIntelligencePolicy(conn)
 
     @utils.support_params
-    def get(self, uuid=None, name=None, params=None):
-        return super().get(uuid=uuid, name=name, params=params)
+    def get(self, uuid=None, name=None, params=None) -> list[AccessPolicyResponse]:
+        raw_data = super().get(uuid=uuid, name=name, params=params)
+        return [AccessPolicyResponse(**x) for x in raw_data]

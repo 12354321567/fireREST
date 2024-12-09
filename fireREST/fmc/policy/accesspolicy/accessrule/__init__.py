@@ -3,6 +3,7 @@ from typing import Union
 from fireREST import utils
 from fireREST.defaults import API_RELEASE_610, API_RELEASE_621
 from fireREST.fmc import ChildResource
+from .response import AccessRuleResponse
 
 
 class AccessRule(ChildResource):
@@ -28,3 +29,12 @@ class AccessRule(ChildResource):
         params=None,
     ):
         return super().create(data=data, container_uuid=container_uuid, container_name=container_name, params=params)
+
+    @utils.support_params
+    def get(self, container_uuid=None, container_name=None, uuid=None, name=None, params=None) -> list[AccessRuleResponse] | AccessRuleResponse:
+        result = super().get(container_uuid=container_uuid, container_name=container_name, uuid=uuid, name=name, params=params)
+
+        if type(result) == list:
+            return [AccessRuleResponse(**access_rule) for access_rule in result]
+        elif type(result) == dict:
+            return AccessRuleResponse(**result)
